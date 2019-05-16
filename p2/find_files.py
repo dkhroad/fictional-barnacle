@@ -1,5 +1,5 @@
 import os
-
+import sys
 
 def find_files(suffix,path="."):
     """
@@ -18,26 +18,23 @@ def find_files(suffix,path="."):
        a list of paths
     """
 
-    # get list of directorys in the path
-    # for each dir call find_file(...)
-    dirs = []
-    files = []
-    subdir_files = []
 
     # why I chose scandir over listdir
     # https://www.python.org/dev/peps/pep-0471/
-    with os.scandir(os.path.expanduser(path)) as it:
-        for entry in it:
-            if entry.is_dir():
-                files.extend(find_files(suffix,entry.path))
-            if entry.is_file() and entry.name.endswith(suffix):
-                files.append(entry.path)
+    try:
+        with os.scandir(os.path.expanduser(path)) as it:
+            for entry in it:
+                if entry.is_dir():
+                    for dir in find_files(suffix,entry.path):
+                        yield dir
+                elif entry.is_file() and entry.name.endswith(suffix):
+                    yield entry.path
+    except PermissionError as exc:
+        pass
 
-    return files
 
 
 if __name__ == "__main__":
-    files = find_files(".py","~/Work/udacity")
-    for f in files:
-        print(f)
+    for files in find_files(".py","~"):
+        print(files)
 
