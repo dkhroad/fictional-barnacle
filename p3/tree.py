@@ -23,6 +23,9 @@ class Node:
     def get_right_child(self):
         return self.right
 
+    def is_leaf_node(self):
+        return not (self.right or self.left)
+
 class Tree:
     def __init__(self,value=None):
         if value is not None:
@@ -32,7 +35,11 @@ class Tree:
                 self.root= Node(value)
 
     def set_root(self,value):
-        self.root = Node(value)
+        if isinstance(value,Node):
+            self.root = value
+        else:
+            self.root= Node(value)
+
 
     def get_root(self):
         return self.root
@@ -66,6 +73,44 @@ class Tree:
 
     def bf_traversal(self):
         return self._bft(self.root)
+
+    def __str__(self):
+        visit = list()
+        q = queue.Queue()
+        level = 0
+        node = (self.root,level)
+        while node: 
+            visit.append((node[0].value,node[1]))
+            if node[0].value != "None":
+                if node[0].has_left_child():
+                    q.enq((node[0].get_left_child(),node[1]+1))
+                else:
+                    q.enq((Node("None"),node[1]+1))
+
+                if node[0].has_right_child():
+                    q.enq((node[0].get_right_child(),node[1]+1))
+                else:
+                    q.enq((Node("None"),node[1]+1))
+
+            node = q.deq()
+        level = 0
+        s = f"[{level}] "
+        # import pdb; pdb.set_trace()
+        for node in visit:
+            if node[1] > level:
+                  level = node[1]
+                  s += f"\n[{level}]"
+            s += f" {node[0]}"
+
+        return s
+
+
+
+
+
+
+
+
 
 
 

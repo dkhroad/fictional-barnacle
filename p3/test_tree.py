@@ -26,6 +26,7 @@ class TestTree(unittest.TestCase):
 
     def test_bft(self):
         self.assertEqual(self.tree.bf_traversal(),['A','B','C','D'])
+        print(self.tree)
 
 
     def tearDown(self):
