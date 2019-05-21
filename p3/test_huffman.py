@@ -69,11 +69,6 @@ class TestHuffEncDec(unittest.TestCase):
                                                     4: '110',
                                                     5: '111'})
 
-    def test_trim_tree(self):
-        t = self.huffencdec.build_huffman_tree(self.data1)
-        self.huffencdec.trim()
-        print(self.huffencdec.tree)
-        pass
 
     def test_encode_tree(self):
         t = self.huffencdec.build_huffman_tree(self.data1)
@@ -144,6 +139,17 @@ class TestHuffEncDec(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+
+class Testhuffman_encoding_decoding(unittest.TestCase):
+
+    def test_1(self):
+        data = "The quick fox jumped over the lazy dog"
+        encoded_data,encoded_tree = huffman_encoding(data)
+        self.assertEqual(huffman_decoding(encoded_data,encoded_tree),
+                         data)
+         
+
 
 
 if __name__ == "__main__":

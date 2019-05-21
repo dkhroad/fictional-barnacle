@@ -52,11 +52,10 @@ class HuffEncDec:
             hufftree = tree.Tree(node)
         return hufftree
 
-    def build_huffman_tree(self,freqlist):
-        # while tuple_list[0] != tree_root
-        #   build_huffman_tree_node with  the first two elemments
-        #   add the new node to the tuple list
-        #   sort the tuple list
+    def build_huffman_tree(self,freqlist=None):
+        if not freqlist:
+            freqlist = self.freqlist
+
         hufftree = None
         while len(freqlist) > 1:
             hufftree = self.build_huffman_tree_node(freqlist[0],freqlist[1],hufftree)
@@ -105,42 +104,6 @@ class HuffEncDec:
         # prefix the encoded data with number of chars in the data
         data_len = bin(len(data))[2:].zfill(schema.BITS_PER_VALUE)
         return data_len + encoded_data
-
-
-    def trim(self):
-        def _trim(node):
-            node.value = node.value[0]
-            if node.has_left_child():
-                _trim(node.get_left_child())
-            if node.has_right_child():
-                _trim(node.get_right_child())
-
-        root = self.tree.get_root()
-        _trim(root)
-
-
-
-    # duplicate can be deleted
-    def encode(self,value):
-        root = self.tree.get_root()
-        print(self.tree)
-
-        def _encode(node):
-            if node.value[1] == value:
-                return
-
-            if node.has_left_child():
-                encoding.append("0")
-                _encode(node.get_left_child())
-
-            if node.has_right_child():
-                encoding.append("1")
-                _encode(node.get_right_child())
-
-        _encode(root)
-        return "".join(encoding)
-
-
 
     def _encode_node_value(self,node):
         if isinstance(node.value[1],str):
@@ -206,7 +169,8 @@ class HuffEncDec:
 
         root = _makeTree(_read_bits())
         print("root: ",root.value)
-        return tree.Tree(root)
+        self.tree = tree.Tree(root)
+        return self.tree
         
 
     def decode_data(self,encoded_data,decoded_tree=None):
@@ -221,7 +185,6 @@ class HuffEncDec:
         idx = 0
         data = list()
 
-        print("type",type(decoded_tree))
         for i in range(data_len):
             node = decoded_tree.get_root()
             while not node.is_leaf_node():
@@ -238,15 +201,23 @@ class HuffEncDec:
 
 
 
-                           
-
-
-
-
-
-
 def huffman_encoding(data):
-    pass
+    huffencdec = HuffEncDec() 
+    huffencdec._get_freq(data)
+    huffencdec.build_huffman_tree()
+    huffencdec.build_encodings()
+    encoded_data = huffencdec.encode_data(data)
+    encoded_tree = huffencdec.encode_tree()
+    return (encoded_data,encoded_tree)
 
-def huffman_decoding(data):
-    pass
+def huffman_decoding(encoded_data,encoded_tree):
+    huffencdec = HuffEncDec()
+    huffencdec.decode_tree(encoded_tree)
+    data = huffencdec.decode_data(encoded_data)
+    return data
+
+
+if __name__ == "__main__":
+    encoded_data,encoded_tree = huffman_encoding("The bird is the word")
+    data = huffman_decoding(encoded_data,encoded_tree)
+    print(data)
