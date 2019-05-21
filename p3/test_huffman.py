@@ -122,11 +122,24 @@ class TestHuffEncDec(unittest.TestCase):
 
     def test_huffman_encoding(self):
         freqlist = self.huffencdec._get_freq(self.data2)
+        self.assertEqual(freqlist,
+                         [(1, 'C'), (1, 'D'), (2, 'B'), (2, 'R'), (5, 'A')])
         hufftree = self.huffencdec.build_huffman_tree(freqlist)
+
         encodings = self.huffencdec.build_encodings()
-        encoded_data = huffencdec.encode_data(self.data2)
-        tree = self.huffencdec.encode_tree()
-        decoded_dats = self.huffencdec.decode_data(encoded_data,tree)
+        self.assertEqual(encodings,
+                         {'A': '0', 'C': '100', 'D': '101', 'B': '110', 'R': '111'})
+
+
+        encoded_data = self.huffencdec.encode_data(self.data2)
+        # 0 110 111 0 100 0 101 0 110 111 0
+        # A  B   R  A  C  A  D  A  B   R  A
+        self.assertEqual(encoded_data,"0000101101101110100010101101110")
+        encoded_tree = self.huffencdec.encode_tree()
+        decoded_tree = HuffEncDec().decode_tree(encoded_tree)
+        decoded_data = self.huffencdec.decode_data(encoded_data,decoded_tree)
+        print("decoded_data",decoded_data)
+        self.assertEqual(self.data2,decoded_data)
 
 
     def tearDown(self):

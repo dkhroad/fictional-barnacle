@@ -6,6 +6,7 @@ class HuffEncDec:
         self.nodedict = {}
         self.tree = tree.Tree()
         self.encodings = {}
+        self.freqlist = None
 
     def _get_tree_node(self,key):
         return self.nodedict[key]
@@ -20,7 +21,7 @@ class HuffEncDec:
 
         tuples = [(v, k) for k, v in freqdict.items()]
         tuples.sort(key=lambda item: item[0])
-        self.tuples =  tuples
+        self.freqlist =  tuples
         return tuples
 
     def build_huffman_tree_node(self,tuple_left,tuple_right,hufftree):
@@ -75,6 +76,10 @@ class HuffEncDec:
 
 
     def build_encodings(self):
+        """
+        builds encoding for each character in the tree, and 
+        stores it in self.encoding dictionary
+        """
 
         def _encode(node,encoding):
             if node.is_leaf_node():
@@ -91,6 +96,15 @@ class HuffEncDec:
                 encoding.pop()
 
         _encode(self.tree.get_root(),[])
+        return self.encodings
+
+    def encode_data(self,data=None):
+        # make sure we have a tree
+        assert self.tree.get_root() != None
+        encoded_data = "".join([self.encodings[c] for c in data])
+        # prefix the encoded data with number of chars in the data
+        data_len = bin(len(data))[2:].zfill(schema.BITS_PER_VALUE)
+        return data_len + encoded_data
 
 
     def trim(self):
@@ -106,7 +120,7 @@ class HuffEncDec:
 
 
 
-
+    # duplicate can be deleted
     def encode(self,value):
         root = self.tree.get_root()
         print(self.tree)
@@ -128,10 +142,18 @@ class HuffEncDec:
 
 
 
+    def _encode_node_value(self,node):
+        if isinstance(node.value[1],str):
+            v = ord(node.value[1])
+        else:
+            v = node.value[1]
+
+        return bin(v)[2:].zfill(schema.BITS_PER_VALUE)
+
     def encode_tree(self):
         def _encode_tree(node):
             if node.is_leaf_node():
-                yield(f"{schema.LEAF_NODE}{bin(node.value[1])[2:].zfill(schema.BITS_PER_VALUE)}")
+                yield(f"{schema.LEAF_NODE}{self._encode_node_value(node)}")
             else:
                 yield(f"{schema.NON_LEAF_NODE}")
 
@@ -186,6 +208,40 @@ class HuffEncDec:
         print("root: ",root.value)
         return tree.Tree(root)
         
+
+    def decode_data(self,encoded_data,decoded_tree=None):
+
+        if not decoded_tree:
+             decoded_tree = self.tree
+
+
+        data_len = int(encoded_data[:schema.BITS_PER_VALUE],2) 
+        idx = schema.BITS_PER_VALUE
+        encoded_data = encoded_data[schema.BITS_PER_VALUE:]
+        idx = 0
+        data = list()
+
+        print("type",type(decoded_tree))
+        for i in range(data_len):
+            node = decoded_tree.get_root()
+            while not node.is_leaf_node():
+                next_bit = int(encoded_data[idx])
+                idx += 1
+                if next_bit:
+                    node = node.get_right_child()
+                else:
+                    node = node.get_left_child()
+            assert node.is_leaf_node() == True
+            data.append(chr(node.value))
+
+        return "".join(data)
+
+
+
+                           
+
+
+
 
 
 
