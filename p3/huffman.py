@@ -1,12 +1,16 @@
 import tree
+import heap as pqueue
 import schema
 
+
 class HuffEncDec:
-    def __init__(self):
+    def __init__(self,data=None):
         self.nodedict = {}
         self.tree = tree.Tree()
         self.encodings = {}
-        self.freqlist = None
+        self.pqueue = pqueue.Heap(key=lambda n: n.value[0])
+        if data:
+            self.freqlist = self._get_freq(data)
 
     def _get_tree_node(self,key):
         return self.nodedict[key]
@@ -20,8 +24,10 @@ class HuffEncDec:
                 freqdict[c] = 1
 
         tuples = [(v, k) for k, v in freqdict.items()]
-        tuples.sort(key=lambda item: item[0])
-        self.freqlist =  tuples
+        # import pdb;pdb.set_trace()
+        self.pqueue.insert(tuples)
+        # tuples.sort(key=lambda item: item[0])
+        # self.freqlist =  tuples
         return tuples
 
     def build_huffman_tree_node(self,tuple_left,tuple_right,hufftree):
@@ -52,26 +58,34 @@ class HuffEncDec:
             hufftree = tree.Tree(node)
         return hufftree
 
-    def build_huffman_tree(self,freqlist=None):
-        if not freqlist:
-            freqlist = self.freqlist
-
+    def build_huffman_tree(self):
+        # import pdb; pdb.set_trace()
         hufftree = None
-        while len(freqlist) > 1:
-            hufftree = self.build_huffman_tree_node(freqlist[0],freqlist[1],hufftree)
-            freqlist = self.add_to_freq_list(freqlist,hufftree.get_root().value)
+        try: 
+            n1 = self.pqueue.extract()
+        except IndexError:
+            n1 = None
 
-        assert freqlist[0] == hufftree.get_root().value
+        try:
+            n2 = self.pqueue.extract()
+        except IndexError:
+            n2 = None
+
+        try:
+            while n1 and n2:
+                hufftree = self.build_huffman_tree_node(n1,n2,hufftree)
+                self.pqueue.insert(hufftree.get_root())
+                n1 = self.pqueue.extract()
+                n2 = self.pqueue.extract()
+        except IndexError:
+            pass
+
+        if not hufftree:
+            hufftree = tree.Tree(n1)
+
+        
         self.tree = hufftree
         return hufftree
-
-
-    def add_to_freq_list(self,tuples,this,sort=True):
-        tuples = tuples[2:] # this is not very optimal
-        tuples.append(this)
-        if sort:
-            tuples.sort(key = lambda item: item[0])
-        return tuples
 
 
     def build_encodings(self):
@@ -168,7 +182,6 @@ class HuffEncDec:
 
 
         root = _makeTree(_read_bits())
-        print("root: ",root.value)
         self.tree = tree.Tree(root)
         return self.tree
         
@@ -202,8 +215,9 @@ class HuffEncDec:
 
 
 def huffman_encoding(data):
-    huffencdec = HuffEncDec() 
-    huffencdec._get_freq(data)
+    # import pdb; pdb.set_trace()
+    huffencdec = HuffEncDec(data) 
+    # huffencdec._get_freq(data)
     huffencdec.build_huffman_tree()
     huffencdec.build_encodings()
     encoded_data = huffencdec.encode_data(data)
