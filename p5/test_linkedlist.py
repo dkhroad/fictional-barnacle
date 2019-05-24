@@ -14,8 +14,16 @@ class TestLinkedList(unittest.TestCase):
         ll.add('A')
         ll.add('B')
         ll.add('C')
+        self.assertEqual([v for v in ll],['A','B','C'])
 
-        self.assertEqual([v for v in ll.next()],['A','B','C'])
+
+    def test_next1(self):
+        ll = linkedlist.LinkedList()
+        it = iter(ll)        
+        self.assertEqual([v for v in ll],[])
+
+
+
 
 
 
