@@ -19,6 +19,34 @@ class TestLinkedList(unittest.TestCase):
         s = set(element_1).union(set(element_2))
         self.assertEqual({n for n in llist_u},s)
 
+    def test_union_edge_cases_1(self):
+        llist_1 = linkedlist.LinkedList()
+        llist_2 = linkedlist.LinkedList()
+
+        element_1 = [3,2,4,35,6,65,6,4,3,21]
+        element_2 = []
+
+        [llist_1.add(i) for i in element_1]
+        [llist_2.add(i) for i in element_2]
+        llist_u = linkedlist.union(llist_1,llist_2)
+
+        s = set(element_1).union(set(element_2))
+        self.assertEqual({n for n in llist_u},s)
+
+    def test_union_edge_cases_1(self):
+        llist_1 = linkedlist.LinkedList()
+        llist_2 = linkedlist.LinkedList()
+
+        element_1 = []
+        element_2 = []
+
+        [llist_1.add(i) for i in element_1]
+        [llist_2.add(i) for i in element_2]
+        llist_u = linkedlist.union(llist_1,llist_2)
+
+        s = set(element_1).union(set(element_2))
+        self.assertEqual({n for n in llist_u},s)
+
 
     def test_intersection(self):
         llist_1 = linkedlist.LinkedList()

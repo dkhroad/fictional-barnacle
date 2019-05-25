@@ -26,11 +26,6 @@ class LinkedList(object):
     def size(self):
         return self.size
 
-    def next(self,node):
-        while node:
-            yield node.value
-            node = node.next
-
 
     def __iter__(self):
         self.current = self.head
