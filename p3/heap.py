@@ -17,6 +17,19 @@ class Heap:
         return value
 
     def insert(self,value):
+        """
+        In order to achieve a more efficient time complexity, 
+        if value is a list of elements to insert in the heap,
+        the heapify process is done only once after all elements are addded 
+        to the internal array instead of doing heapify operation 
+        after each insert.
+
+        Therefore, when inserting a list of items into the heap, the
+        time complexity is O(n) where n is the number of element in the 
+        heap. 
+
+        Time complexity of adding a single element is O(log n)
+        """
         if isinstance(value,list):
             nodes = [self.create_node_from_value_if_needed(v) for v in value]
             [self.heap_array.append(n) for n in nodes]
@@ -42,11 +55,28 @@ class Heap:
 
 
     def heapify(self,p_idx):
+        """
+        helper method to repeatedly build a binary heap for a root 
+        node at index i in the heap array, where index i: p_idx <= i <=0 
+        
+        Time Complexity: O(n * log n) 
+        
+        wher n is the total number of elements in the heap.
+
+        If p_idx is < (n/2 -1), the tigher time analysis reveals 
+        that time complexity is O(n)
+        """
         while p_idx >= 0:
             self.reheapify(p_idx)
             p_idx -= 1
 
     def extract(self):
+        """
+        extract the element from the top of the heap.
+        and reheapify 
+
+        Time complexity: O(log n)
+        """
         last = None
         last = self.heap_array.pop()
 
@@ -54,9 +84,9 @@ class Heap:
             root = self.heap_array[0];
             self.heap_array[0] = last
             self.reheapify()
-            return root.value
+            return root
         except IndexError:
-            return last.value
+            return last
 
 
     def less_than_or_equal(self,idx1,idx2):
@@ -67,44 +97,42 @@ class Heap:
             return True
 
     def swap(self,idx1,idx2):
-        # import pdb; pdb.set_trace()
         node = self.heap_array[idx1]
         self.heap_array[idx1] = self.heap_array[idx2]
         self.heap_array[idx2] = node
 
+
     def reheapify(self,p_idx=0):
-        # import pdb; pdb.set_trace()
+        """
+        rebuild the binary heap starting from index p_idx
+
+        Time complexity: O(log n)
+        """
         l_idx = (p_idx << 1) +1
         r_idx = l_idx + 1
         size = len(self.heap_array)
-
             
         while p_idx < size and l_idx < size:
             # pick the child most out of order
             m_idx = self.most_out_of_order_idx(l_idx,r_idx)
-            # if r_idx < size:
-            #     if self.less_than_or_equal(r_idx,l_idx):
-            #         m_idx = r_idx 
-            #     else: 
-            #         m_idx = l_idx
-            # else:
-            #     m_idx = l_idx
 
             if not self.swap_if_needed(p_idx,m_idx):
                 break
-            # if not self.less_than_or_equal(p_idx,m_idx):
-            #     self.swap(p_idx,m_idx)
-            # else:
-            #     break # we are done
 
             p_idx = (p_idx << 1) + 1 # go to the next level 
             l_idx = (p_idx << 1) + 1
             r_idx = l_idx + 1
 
     def heapify_after_insert(self):
+        """
+        the last inserted element in the heap array might violate the 
+        heap. Start at the bottom most level and fix the heap by 
+        moving each level up until no swap is required.
+
+        Time complexity: O(log n)
+        """
         size = len(self.heap_array)
         idx = size - 1
-        # import pdb; pdb.set_trace()
         while idx > 0 : 
             parent_idx = (idx -1) >> 1  # parent lives at i-1/2
             if not self.less_than_or_equal(parent_idx,idx):

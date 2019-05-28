@@ -1,4 +1,3 @@
-import pdb
 USERS = {}
 
 class User(object):

@@ -8,23 +8,18 @@ class TestHuffEncDec(unittest.TestCase):
         self.data1 = [(5,1),(7,2),(10,3),(15,4),(20,5),(45,6)]
         self.data2 = 'ABRACADABRA'
 
-    def test_get_freq(self):
+    def test_build_pq(self):
 
-        self.assertEqual(self.huffencdec._get_freq("This is a test"),[(1, 'T'),
-                                                                      (1, 'h'),
-                                                                      (2, 'i'),
-                                                                      (3, 's'),
-                                                                      (3, ' '),
-                                                                      (1, 'a'),
-                                                                      (2, 't'),
-                                                                      (1, 'e')])
+        self.huffencdec._build_pq("This is a test");
         q = [node.value for node in self.huffencdec.pqueue.heap_array]
         self.assertEqual(q,[(1, 'T'),(1, 'h'),(1, 'a'),(1, 'e'),(3, ' '),(2, 'i'),(2, 't'),(3, 's')])
 
 
     def test_build_huffman_tree_root(self):
-        t = self.huffencdec.build_huffman_tree_node(self.data1[0],self.data1[1],None)
-        self.assertEqual(t.get_root().value,(12,"1-2"))
+        n1 = tree.Node(self.data1[0])
+        n2 = tree.Node(self.data1[1])
+        t = self.huffencdec.build_huffman_tree_node(n1,n2,None)
+        self.assertEqual(t.get_root().value,(12,None))
 
         
     def test_build_part_huffman_tree(self):
@@ -32,21 +27,21 @@ class TestHuffEncDec(unittest.TestCase):
         self.huffencdec.pqueue.insert(self.data1)
         n1 = self.huffencdec.pqueue.extract()
         n2 = self.huffencdec.pqueue.extract()
-        t = self.huffencdec.build_huffman_tree_node(self.data1[0],self.data1[1],None)
+        t = self.huffencdec.build_huffman_tree_node(n1,n2,None)
         self.huffencdec.pqueue.insert(t.get_root())
-        self.assertEqual(t.get_root().value,(12,'1-2'))
+        self.assertEqual(t.get_root().value,(12,None))
         n1 = self.huffencdec.pqueue.extract()
         n2 = self.huffencdec.pqueue.extract()
         
         t = self.huffencdec.build_huffman_tree_node(n1,n2,t)
         r = t.get_root()
-        self.assertEqual(r.value,(22,'3-1-2'))
+        self.assertEqual(r.value,(22,None))
         self.assertEqual(r.get_left_child().value,(10,3))
         rc = r.get_right_child() 
         rcr = rc.get_right_child()
         rcl = rc.get_left_child()
 
-        self.assertEqual(rc.value,(12,'1-2'))
+        self.assertEqual(rc.value,(12,None))
         self.assertEqual(rcr.value,(7,2))
 
     def test_build_complete_huffman_tree(self):
@@ -55,17 +50,17 @@ class TestHuffEncDec(unittest.TestCase):
         t = self.huffencdec.build_huffman_tree()
         r = t.get_root()
         
-        self.assertEqual(r.value,(102,'6-3-1-2-4-5'))
+        self.assertEqual(r.value,(102, None ))
         rl = r.get_left_child()
         rr = r.get_right_child()
         self.assertEqual(rl.value,(45,6))
         self.assertEqual(rl.get_left_child(),None)
         self.assertEqual(rl.get_right_child(),None)
-        self.assertEqual(rr.value,(57,'3-1-2-4-5'))
+        self.assertEqual(rr.value,(57,None))
         rrl = rr.get_left_child()
         rrr = rr.get_right_child()
-        self.assertEqual(rrl.value,(22,'3-1-2'))
-        self.assertEqual(rrr.value,(35,'4-5'))
+        self.assertEqual(rrl.value,(22,None))
+        self.assertEqual(rrr.value,(35,None))
 
 
     def test_encoding(self):

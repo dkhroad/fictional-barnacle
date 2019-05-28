@@ -42,7 +42,7 @@ class LinkedList(object):
 
         
 def union(llist_1,llist_2):
-    element_1 = {n for n in llist_1}
+    element_1 = {n for n in llist_1} 
     element_2 = {n for n in llist_2}
 
     llist_u = LinkedList()

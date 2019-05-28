@@ -8,18 +8,18 @@ class TestHeap(unittest.TestCase):
         heap = Heap()
         heap.insert(items)
         print(heap)
-        self.assertEqual(heap.extract(),7)
-        self.assertEqual(heap.extract(),9)
-        self.assertEqual(heap.extract(),10)
-        self.assertEqual(heap.extract(),12)
-        self.assertEqual(heap.extract(),15)
-        self.assertEqual(heap.extract(),17)
-        self.assertEqual(heap.extract(),19)
-        self.assertEqual(heap.extract(),20)
-        self.assertEqual(heap.extract(),22)
-        self.assertEqual(heap.extract(),25)
+        self.assertEqual(heap.extract().value,7)
+        self.assertEqual(heap.extract().value,9)
+        self.assertEqual(heap.extract().value,10)
+        self.assertEqual(heap.extract().value,12)
+        self.assertEqual(heap.extract().value,15)
+        self.assertEqual(heap.extract().value,17)
+        self.assertEqual(heap.extract().value,19)
+        self.assertEqual(heap.extract().value,20)
+        self.assertEqual(heap.extract().value,22)
+        self.assertEqual(heap.extract().value,25)
         with self.assertRaises(IndexError):
-            heap.extract()
+            heap.extract().value
 
     def test_insert(self):
         items = [17, 15, 10, 19, 20, 25, 22, 7, 12, 9] 
@@ -61,18 +61,18 @@ class TestHeap(unittest.TestCase):
             heap.insert(items[i])
         print(heap)
 
-        self.assertEqual(heap.extract(),7)
-        self.assertEqual(heap.extract(),9)
-        self.assertEqual(heap.extract(),10)
-        self.assertEqual(heap.extract(),12)
-        self.assertEqual(heap.extract(),15)
-        self.assertEqual(heap.extract(),17)
-        self.assertEqual(heap.extract(),19)
-        self.assertEqual(heap.extract(),20)
-        self.assertEqual(heap.extract(),22)
-        self.assertEqual(heap.extract(),25)
+        self.assertEqual(heap.extract().value,7)
+        self.assertEqual(heap.extract().value,9)
+        self.assertEqual(heap.extract().value,10)
+        self.assertEqual(heap.extract().value,12)
+        self.assertEqual(heap.extract().value,15)
+        self.assertEqual(heap.extract().value,17)
+        self.assertEqual(heap.extract().value,19)
+        self.assertEqual(heap.extract().value,20)
+        self.assertEqual(heap.extract().value,22)
+        self.assertEqual(heap.extract().value,25)
         with self.assertRaises(IndexError):
-            heap.extract()
+            heap.extract().value
 
         
     def test_extract_tuples(self):
@@ -81,10 +81,10 @@ class TestHeap(unittest.TestCase):
         for i in range(len(items)):
             heap.insert(items[i])
         print(heap)
-        self.assertEqual(heap.extract(),(5,1))
-        self.assertEqual(heap.extract(),(7,2))
-        self.assertEqual(heap.extract(),(10,3))
-        self.assertEqual(heap.extract(),(15,4))
-        self.assertEqual(heap.extract(),(20,5))
-        self.assertEqual(heap.extract(),(45,6))
+        self.assertEqual(heap.extract().value,(5,1))
+        self.assertEqual(heap.extract().value,(7,2))
+        self.assertEqual(heap.extract().value,(10,3))
+        self.assertEqual(heap.extract().value,(15,4))
+        self.assertEqual(heap.extract().value,(20,5))
+        self.assertEqual(heap.extract().value,(45,6))
         
