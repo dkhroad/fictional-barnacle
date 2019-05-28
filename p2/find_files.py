@@ -16,6 +16,9 @@ def find_files(suffix,path="."):
 
     Returns:
        a list of paths
+
+    Time Complexity: O(d*n) where d is the number of directories and n 
+    is the number of files in each directory. 
     """
 
 

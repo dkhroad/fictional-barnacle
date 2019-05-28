@@ -4,18 +4,15 @@ class LRU_Cache(object):
         self.cache = DoubleLinkedList.DoubleLinkedList(capacity)
         self.dict = {}
 
-
-
     def get(self,key):
         try:
             node = self.dict[key]
             self.cache.delete(node)
             self.cache.add_to_head(node)
-            print("node.value",node.value)
+            # print("node.value",node.value)
             return node.value
         except KeyError:
             return -1
-
 
     def set(self,key,value):
         deleted=self.cache.delete_tail_if_full()
