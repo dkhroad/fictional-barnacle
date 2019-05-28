@@ -18,8 +18,7 @@ class TestQueue(unittest.TestCase):
         self.assertEqual(self.q.deq(),4)
         self.assertEqual(self.q.deq(),5)
         self.assertEqual(self.q.deq(),6)
-        with self.assertRaises(IndexError):
-            self.q.deq()
+        self.assertEqual(self.q.deq(),None)
     def tearDown(self):
         pass
 
